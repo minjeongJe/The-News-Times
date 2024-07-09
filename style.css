@@ -1,0 +1,138 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+}
+
+/* 사이드 메뉴 및 검색 */
+.head-search {
+   display: flex;
+   margin-top: 10px;
+}
+
+.material-icons {
+    padding: 7px;
+}
+
+.material-icons:hover {
+    cursor: pointer;
+    transform: scale(1.1);
+}
+
+#input-area {
+    padding: 5px;
+} 
+
+#search-input {
+    height: 30px;
+    border: 1px solid lightgrey;
+}
+
+#input-area button {
+    height: 30px;
+    border: none;
+    border-radius: 5px;
+    color: #ebebeb;
+    background-color: gray;
+}
+
+.side-menu {
+  height: 100%;
+  width: 0;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: rgba(177, 174, 174, 0.938);
+  overflow-x: hidden;
+  transition: 0.5s;
+  padding-top: 60px;
+}
+
+.closebtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 30px;
+    margin-left: 50px;
+    border: none;
+    background: none;
+}
+
+.side-menu-list button {
+  border: none;
+  background: none;
+  padding: 10px;
+}
+
+.side-menu-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.side-menu-list button:hover,
+.closebtn:hover {
+    color: #ebebeb;
+}
+
+
+/* 제목 */
+.head-line {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    margin: 20px 0;
+}
+
+.head-line svg {
+    width: 430px;
+}
+
+/* 카테고리 */
+.menus {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    border-top: 1px solid #ebebeb;
+    border-bottom: 4px double black;
+}
+
+.menus button {
+    border: none;
+    background: none;
+    margin: 5px;
+}
+
+.menus button:hover {
+    background-color: antiquewhite;
+}
+
+/* 뉴스 내용 */
+.news-img-size {
+    max-width: 100%;
+    max-height: 250px;
+}
+
+.news {
+    border-bottom: 2px solid black;
+    padding: 20px;
+}
+
+.col-lg-8 {
+    margin-top: 20px;
+}
+
+@media (max-width: 768px) {
+    .menus {
+    display: none;
+    opacity: 1;
+    height: auto;
+    transition: opacity 0.5s ease, height 0.5s ease;
+  }
+}
+
+@media (min-width: 769px) {
+    .side-icon {
+        display: none;
+    }
+}

@@ -2,9 +2,15 @@ let newsList = [];
 const menus = document.querySelectorAll(".menus button, .side-menu-list button");
 menus.forEach(menu => menu.addEventListener("click",(event) => getNewsByCategory(event)))
 
-const getLatestNews = async () => {
+const searchInput = document.getElementById("search-input");
+
+const getLatestNews = async (params = {}) => {
     const url = new URL(`https://eve-the-news-times.netlify.app/top-headlines`);
     url.searchParams.set('country', 'kr');
+
+    for (const [key, value] of Object.entries(params)) {
+        url.searchParams.set(key, value);
+    }
 
     try {
         const response = await fetch(url);
@@ -14,37 +20,26 @@ const getLatestNews = async () => {
         }
 
         const data = await response.json();
-        console.log("dd",data);
         newsList = data.articles;
-        render ();
+        render();
         console.log("Fetched news:", newsList);
     } catch (error) {
         console.error('Error fetching news:', error.message);
     }
 };
 
-//카테고리
-const getNewsByCategory = async (event) => {
-    const category = event.target.textContent.toLowerCase();
-    const url = new URL('https://eve-the-news-times.netlify.app/top-headlines');
-    url.searchParams.set('country', 'kr');
-    url.searchParams.set('category', category);
-
-    try {
-        const response = await fetch(url);
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        newsList = data.articles;
-        render();
-        console.log(`Fetched ${category} news:`, newsList);
-    } catch (error) {
-        console.error(`Error fetching ${category} news:`, error.message);
-    }
+// 검색 뉴스 가져오기
+const searchNews = () => {
+    const keyword = searchInput.value;
+    getLatestNews({ q: keyword });
 };
+
+// 카테고리별 뉴스 가져오기
+const getNewsByCategory = (event) => {
+    const category = event.target.textContent.toLowerCase();
+    getLatestNews({ category });
+};
+
 
 //UI 그려줌.
 const render = () => {
@@ -77,11 +72,27 @@ const closeNav = () => {
   document.getElementById("mySidenav").style.width = "0";
 }
 
-// 상단 검색창 보이고 숨기기
+// 상단 검색창 돋보기아이콘을 누르면 보이고 숨기기
 const openSearchBox = () => {
   let inputArea = document.getElementById("input-area");
   inputArea.style.display = inputArea.style.display === "inline" ? "none" : "inline";
 };
+
+// 검색 버튼에 이벤트 리스너 추가
+document.getElementById("search-button").addEventListener("click", searchNews);
+
+//data검색 후 포커스 가해지면 검색창 초기화.
+searchInput.addEventListener("focus", function() {
+    searchInput.value = "";
+});
+
+//검색창에 enter 클릭시 data 전달.
+searchInput.addEventListener("keyup", (event) => {
+    if (event.key === "Enter") {
+        searchNews();
+    }
+});
+
 
 getLatestNews();
 

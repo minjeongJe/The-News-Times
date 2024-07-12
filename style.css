@@ -21,7 +21,17 @@
 /* 검색창 */
 #input-area {
     padding: 5px;
+    opacity: 0;
+    max-width: 0;
+    transition: opacity 0.5s, max-width 0.5s;
+    overflow: hidden;
+    white-space: nowrap;
 } 
+
+#input-area.show {
+    opacity: 1;
+    max-width: 230px;
+}
 
 #search-input {
     height: 30px;
@@ -76,7 +86,6 @@
 .closebtn:hover {
     color: #ebebeb;
 }
-
 
 /* 제목 */
 .head-line {

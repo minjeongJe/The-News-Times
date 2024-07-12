@@ -14,17 +14,32 @@ const getLatestNews = async (params = {}) => {
 
     try {
         const response = await fetch(url);
-        
+
         if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            throw new Error('Failed to fetch');
         }
 
         const data = await response.json();
-        newsList = data.articles;
-        render();
-        console.log("Fetched news:", newsList);
+        console.log("Data:", data);
+
+        if (response.status === 200) {
+            if(data.articles.length === 0){
+                throw new Error("No result for this search");
+            }
+            newsList = data.articles;
+            render(); 
+
+
+        } else {
+            throw new Error(data.message || 'Failed to fetch data');
+        }
+        
     } catch (error) {
-        console.error('Error fetching news:', error.message);
+        if (error instanceof TypeError) {
+            errorRender('Network error: Failed to fetch data');
+        } else {
+            errorRender(error.message);
+        }
     }
 };
 
@@ -32,9 +47,12 @@ const getLatestNews = async (params = {}) => {
 const searchNews = () => {
     const keyword = searchInput.value;
     getLatestNews({ q: keyword });
+
+    // 검색 완료 후 검색창 초기화
+    searchInput.value = "";
 };
 
-// 카테고리별 뉴스 가져오기
+// 카테고리별 뉴스 가져오기 
 const getNewsByCategory = (event) => {
     const category = event.target.textContent.toLowerCase();
     getLatestNews({ category });
@@ -62,6 +80,13 @@ const render = () => {
   document.getElementById("news-board").innerHTML = newsHTML;
 };
 
+//에러 경고창을 보여줌.
+const errorRender = (errorMessage) => {
+    const errorHTML = `<div class="alert alert-danger" role="alert">
+    ${errorMessage}
+    </div>`;
+    document.getElementById("news-board").innerHTML = errorHTML;
+}
 
 // 사이드메뉴
 const openNav = () => {
@@ -75,16 +100,11 @@ const closeNav = () => {
 // 상단 검색창 돋보기아이콘을 누르면 보이고 숨기기
 const openSearchBox = () => {
   let inputArea = document.getElementById("input-area");
-  inputArea.style.display = inputArea.style.display === "inline" ? "none" : "inline";
+  inputArea.classList.toggle("show");
 };
-
+ 
 // 검색 버튼에 이벤트 리스너 추가
 document.getElementById("search-button").addEventListener("click", searchNews);
-
-//data검색 후 포커스 가해지면 검색창 초기화.
-searchInput.addEventListener("focus", function() {
-    searchInput.value = "";
-});
 
 //검색창에 enter 클릭시 data 전달.
 searchInput.addEventListener("keyup", (event) => {

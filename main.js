@@ -6,7 +6,7 @@ const searchInput = document.getElementById("search-input");
 //pagination
 let totalResults = 0;
 let page = 1;
-const pageSize = 7;
+const pageSize = 10;
 const groupSize = 5;
 
 const getLatestNews = async (params = {}) => {
@@ -53,6 +53,7 @@ const getLatestNews = async (params = {}) => {
 
 // 검색 뉴스 가져오기
 const searchNews = async() => {
+    page = 1; // 페이지를 1로 초기화   
     const keyword = searchInput.value;
     await getLatestNews({ q: keyword });
 
@@ -62,6 +63,7 @@ const searchNews = async() => {
 
 // 카테고리별 뉴스 가져오기 
 const getNewsByCategory = async(event) => {
+    page = 1; // 페이지를 1로 초기화
     const category = event.target.textContent.toLowerCase();
     await getLatestNews({ category });
 };
@@ -107,15 +109,21 @@ const paginationRender = () => {
         lastPage = totalPages;
     }
 
-    let paginationHTML = `<li class="page-item" ><a class="page-link" href="#">&lt;&lt;</a></li>
-    <li class="page-item" onclick="moveToPage(${page - 1})"><a class="page-link" href="#">&lt;</a></li>`;
+    let paginationHTML = '';
+
+    if(page > 1){
+        paginationHTML = `<li class="page-item" onclick="moveToPage(1)"><a class="page-link" href="#">&lt;&lt;</a></li>
+        <li class="page-item" onclick="moveToPage(${page - 1})"><a class="page-link" href="#">&lt;</a></li>`;
+    }
 
     for (let i = firstPage; i <= lastPage; i++) {
         paginationHTML += `<li class="page-item ${i === page ? 'active' : ''} "onclick="moveToPage(${i})"><a class="page-link" href="#">${i}</a></li>`;
     }
 
-    paginationHTML +=`<li class="page-item" onclick="moveToPage(${page +1})"><a class="page-link" href="#">&gt;</a></li>
-    <li class="page-item" ><a class="page-link" href="#">&gt;&gt;</a></li>`;
+    if(page < totalPages){
+        paginationHTML +=`<li class="page-item" onclick="moveToPage(${page +1})"><a class="page-link" href="#">&gt;</a></li>
+        <li class="page-item" onclick="moveToPage(${totalPages})"><a class="page-link" href="#">&gt;&gt;</a></li>`;
+    }
 
     document.querySelector(".pagination").innerHTML = paginationHTML; 
 };
